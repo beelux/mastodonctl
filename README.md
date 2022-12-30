@@ -1,5 +1,5 @@
 
-<img src="mastodonctl.png" alt="mastodonctl logo" width="96" height="96"/>
+<img src="mastodonctl.png" alt="mastodonctl logo" width="196" height="196"/>
 
 # mastodonctl
 cli client for mastodon social media platform
