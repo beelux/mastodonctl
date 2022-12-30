@@ -1,3 +1,6 @@
+
+<img src="mastodonctl.png" alt="mastodonctl logo" width="96" height="96"/>
+
 # mastodonctl
 cli client for mastodon social media platform
 
