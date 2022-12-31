@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/fatih/color"
+	"github.com/rodaine/table"
 	"gopkg.in/urfave/cli.v1"
 )
 
@@ -115,7 +117,7 @@ func main() {
 					return nil
 				}
 
-				uri := fmt.Sprintf("https://mastodon.social/api/v1/timelines/tag/%s?limit=1", hashtag)
+				uri := fmt.Sprintf("https://mastodon.social/api/v1/timelines/tag/%s?limit=10", hashtag)
 
 				resp, err := http.Get(uri)
 				if err != nil {
@@ -130,10 +132,19 @@ func main() {
 					fmt.Println("Can not unmarshal JSON")
 				}
 
+				headerFmt := color.New(color.FgBlue, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.fg).SprintfFunc()
+
+				tbl := table.New("hashtag", "username", "url")
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+
 				for _, r := range results {
-					url := r.MediaAttachments[len(r.MediaAttachments)-1].URL
-					fmt.Println(fmt.Sprintf("Latest %s pic at this URL: %s", hashtag, url))
+
+					media := r.MediaAttachments[len(r.MediaAttachments)-1]
+					tbl.AddRow(hashtag, r.Account.Username, media.URL)
 				}
+
+				tbl.Print()
 
 				return nil
 			},

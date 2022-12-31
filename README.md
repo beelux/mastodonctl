@@ -1,5 +1,5 @@
 
-<img src="mastodonctl.png" alt="mastodonctl logo" width="196" height="196"/>
+<img src="img/mastodonctl.png" alt="mastodonctl logo" width="196" height="196"/>
 
 # mastodonctl
 cli client for mastodon social media platform
@@ -17,6 +17,4 @@ go run main.go hashtag -name cat
 
 Expect:
 
-```bash
-Latest cat pic at this URL: https://files.mastodon.social/cache/media_attachments/files/109/604/600/038/040/501/original/f5b1b999e25b83f9.jpeg
-```
+<img src="img/tablemastodon.png" alt="ctl results for cat"/>
