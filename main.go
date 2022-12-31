@@ -118,7 +118,11 @@ func main() {
 	}
 
 	app := cli.NewApp()
-	app.Usage = "commandline client for a Mastadon social media user"
+	app.Name = "mastodonctl"
+	app.Usage = "commandline client for a Mastodon social media user"
+
+	app.Authors = append(app.Authors, cli.Author{Name: "socraticDev", Email: "socraticdev@gmail.com"})
+	app.Version = "0.1.0"
 	app.Commands = []cli.Command{
 		{
 			Name:      "hashtag",
