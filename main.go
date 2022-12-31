@@ -13,6 +13,21 @@ import (
 	"gopkg.in/urfave/cli.v1"
 )
 
+type Conf struct {
+	ResultsDisplayCount int
+	ApiUrl              string
+}
+
+func (conf *Conf) DefaultConf() {
+	if conf.ResultsDisplayCount == 0 {
+		conf.ResultsDisplayCount = 5
+	}
+
+	if conf.ApiUrl == "" {
+		conf.ApiUrl = "https://mastodon.social"
+	}
+}
+
 type Response []struct {
 	ID                 string      `json:"id"`
 	CreatedAt          time.Time   `json:"created_at"`
@@ -88,19 +103,26 @@ type Response []struct {
 	Poll   interface{}   `json:"poll"`
 }
 
-// PrettyPrint to print struct in a readable way
-func PrettyPrint(i interface{}) string {
-	s, _ := json.MarshalIndent(i, "", "\t")
-	return string(s)
-}
-
 func main() {
+	conf := Conf{}
+	configs_file, err := os.Open("conf.json")
+	if os.IsNotExist(err) {
+		conf.DefaultConf()
+	} else {
+		defer configs_file.Close()
+		decoder := json.NewDecoder(configs_file)
+		err := decoder.Decode(&conf)
+		if err != nil {
+			fmt.Println("Error with configurations", err)
+		}
+	}
+
 	app := cli.NewApp()
 	app.Usage = "commandline client for a Mastadon social media user"
 	app.Commands = []cli.Command{
 		{
 			Name:      "hashtag",
-			ShortName: "#",
+			ShortName: "tag",
 			Usage:     "Will get latest post informations about a specific hashtag",
 			Flags: []cli.Flag{
 				cli.StringFlag{
@@ -117,7 +139,7 @@ func main() {
 					return nil
 				}
 
-				uri := fmt.Sprintf("https://mastodon.social/api/v1/timelines/tag/%s?limit=10", hashtag)
+				uri := fmt.Sprintf("%s/api/v1/timelines/tag/%s?limit=%d", conf.ApiUrl, hashtag, conf.ResultsDisplayCount)
 
 				resp, err := http.Get(uri)
 				if err != nil {
@@ -133,15 +155,19 @@ func main() {
 				}
 
 				headerFmt := color.New(color.FgBlue, color.Underline).SprintfFunc()
-				columnFmt := color.New(color.fg).SprintfFunc()
+				columnFmt := color.New(color.FgHiBlue).SprintfFunc()
 
-				tbl := table.New("hashtag", "username", "url")
+				tbl := table.New("hashtag", "username", "media url")
 				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 				for _, r := range results {
+					url := "{no media}"
 
-					media := r.MediaAttachments[len(r.MediaAttachments)-1]
-					tbl.AddRow(hashtag, r.Account.Username, media.URL)
+					if len(r.MediaAttachments) > 0 {
+						url = r.MediaAttachments[len(r.MediaAttachments)-1].URL
+					}
+
+					tbl.AddRow(hashtag, r.Account.Username, url)
 				}
 
 				tbl.Print()
