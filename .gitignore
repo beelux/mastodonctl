@@ -1,6 +1,10 @@
 # developer IDE configs
 .vscode
 
+# dev personal stuff
+notes.txt
+temp.json
+
 # Binaries for programs and plugins
 *.exe
 *.exe~

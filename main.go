@@ -13,9 +13,48 @@ import (
 	"gopkg.in/urfave/cli.v1"
 )
 
+type Users struct {
+	Accounts []struct {
+		ID             string        `json:"id"`
+		Username       string        `json:"username"`
+		Acct           string        `json:"acct"`
+		DisplayName    string        `json:"display_name"`
+		Locked         bool          `json:"locked"`
+		Bot            bool          `json:"bot"`
+		Discoverable   bool          `json:"discoverable"`
+		Group          bool          `json:"group"`
+		CreatedAt      time.Time     `json:"created_at"`
+		Note           string        `json:"note"`
+		URL            string        `json:"url"`
+		Avatar         string        `json:"avatar"`
+		AvatarStatic   string        `json:"avatar_static"`
+		Header         string        `json:"header"`
+		HeaderStatic   string        `json:"header_static"`
+		FollowersCount int           `json:"followers_count"`
+		FollowingCount int           `json:"following_count"`
+		StatusesCount  int           `json:"statuses_count"`
+		LastStatusAt   string        `json:"last_status_at"`
+		Noindex        bool          `json:"noindex"`
+		Emojis         []interface{} `json:"emojis"`
+		Fields         []interface{} `json:"fields"`
+	} `json:"accounts"`
+	Statuses []interface{} `json:"statuses"`
+	Hashtags []struct {
+		Name    string `json:"name"`
+		URL     string `json:"url"`
+		History []struct {
+			Day      string `json:"day"`
+			Accounts string `json:"accounts"`
+			Uses     string `json:"uses"`
+		} `json:"history"`
+		Following bool `json:"following"`
+	} `json:"hashtags"`
+}
+
 type Conf struct {
 	ResultsDisplayCount int
 	ApiUrl              string
+	AuthToken           string
 }
 
 func (conf *Conf) DefaultConf() {
@@ -26,6 +65,12 @@ func (conf *Conf) DefaultConf() {
 	if conf.ApiUrl == "" {
 		conf.ApiUrl = "https://mastodon.social"
 	}
+}
+
+// todo: move to Utils - PrettyPrint to print struct in a readable way
+func PrettyPrint(i interface{}) string {
+	s, _ := json.MarshalIndent(i, "", "\t")
+	return string(s)
 }
 
 type Response []struct {
@@ -125,6 +170,66 @@ func main() {
 	app.Version = "0.1.0"
 	app.Commands = []cli.Command{
 		{
+			Name:      "userinfos",
+			ShortName: "id",
+			Usage:     "Retrieve Mastodon Account ID by username",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "username",
+					Usage: "Username of the targetted Mastodon Account",
+					Value: "socdev",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				username := c.String("username")
+
+				// https://discourse.joinmastodon.org/t/how-to-get-mastodons-user-id-from-mastodon-account-acct-username-server/1658/6
+				uri := fmt.Sprintf("%s/api/v2/search?q=%s&resolve=true?limit=%d", conf.ApiUrl, username, conf.ResultsDisplayCount)
+
+				req, _ := http.NewRequest(http.MethodGet, uri, nil)
+				req.Header.Set("Content-Type", "application/json") // => your content-type
+
+				var token_val string
+				if len(conf.AuthToken) > 0 {
+					token_val = fmt.Sprintf("Bearer %s", conf.AuthToken)
+				} else {
+					token_val = fmt.Sprintf("Bearer %s", os.Getenv("BEARER_TOKEN"))
+				}
+
+				req.Header.Add("Authorization", token_val)
+
+				client := http.Client{Timeout: 5 * time.Second}
+				response, err := client.Do(req)
+				if err != nil {
+					panic(err)
+				}
+
+				body, err := ioutil.ReadAll(response.Body) // response body is []byte
+
+				var results Users
+				if err := json.Unmarshal(body, &results); err != nil { // Parse []byte to go struct pointer
+					fmt.Println("Can not unmarshal JSON")
+				}
+
+				headerFmt := color.New(color.FgBlue, color.Underline).SprintfFunc()
+				columnFmt := color.New(color.FgHiBlue).SprintfFunc()
+
+				tbl := table.New("id", "username", "displayname", "URL", "follower count", "following count")
+				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+
+				user := results.Accounts[len(results.Accounts)-1]
+				tbl.AddRow(user.ID, user.Username, user.DisplayName, user.URL, user.FollowersCount, user.FollowingCount)
+
+				for _, r := range results.Accounts {
+
+					tbl.AddRow(r.ID, r.Username, r.DisplayName, r.URL, r.FollowersCount, r.FollowingCount)
+				}
+
+				tbl.Print()
+
+				return nil
+			},
+		}, {
 			Name:      "hashtag",
 			ShortName: "tag",
 			Usage:     "Will get latest post informations about a specific hashtag",

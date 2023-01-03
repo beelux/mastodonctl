@@ -1,4 +1,5 @@
 {
-    "ResultsDisplayCount": 10,
-    "ApiUrl": "https://uiuxdev.social"
+  "ResultsDisplayCount": 10,
+  "ApiUrl": "https://mastodon.social",
+  "AuthToken": ""
 }
