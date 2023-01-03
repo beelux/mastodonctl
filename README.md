@@ -33,7 +33,7 @@ go run main.go userinfos -username dave
 
 Expect:
 
-<img src="img/userinfos.png" alt="ctl results for userinfos"/>
+<img src="img/userinfos.PNG" alt="ctl results for userinfos"/>
 
 ### hashtag
 
