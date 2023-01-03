@@ -12,10 +12,11 @@ This is possible by editing [`conf.json`](conf.json) file
 
 ### configurable values
 
-| field               | description                                  |
-| ------------------- | -------------------------------------------- |
-| ResultsDisplayCount | number of results displayed in your terminal |
-| ApiUrl              | URL of targetted mastodon server             |
+| field               | description                                         |
+| ------------------- | --------------------------------------------------- |
+| ResultsDisplayCount | number of results displayed in your terminal        |
+| ApiUrl              | URL of targetted mastodon server                    |
+| AuthToken           | auth token required to interact with a server's API |
 
 ## current available commands
 
@@ -29,6 +30,7 @@ Will query Mastadon server's API for user infos based on their `username`
 export BEARER_TOKEN=<YOUR PERSONAL BEARER TOKEN>
 go run main.go userinfos -username dave
 ```
+
 Expect:
 
 <img src="img/userinfos.png" alt="ctl results for userinfos"/>
