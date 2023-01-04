@@ -4,6 +4,29 @@
 
 cli client for mastodon social media platform
 
+## installation
+
+since we don't provide pre-built binaries, having Go installed on your machine
+is required. Follow this link: [https://go.dev/dl/](https://go.dev/dl/)
+
+0. Clone repo to your local machine (fork repo if you intend to be a Contributor!)
+    ```bash
+    git clone https://github.com/socraticDevBlog/mastodonctl.git
+    ```
+1. Install project
+    ```bash
+    go install
+    ```
+2. Build project
+    ```bash
+    go build
+    ```
+3. Add current project directory to your user PATH
+    - [Windows](https://learn.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)) 
+    - [GNU/linux](https://linuxize.com/post/how-to-add-directory-to-path-in-linux/)
+
+`mastodonctl` is now available as CLI tool! 🚀
+
 ## configurations
 
 As an experienced user, you may want to customize your commandline-tool.

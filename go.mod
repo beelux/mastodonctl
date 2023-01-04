@@ -1,4 +1,4 @@
-module com.freshdatasource.mastodonctl
+module mastodonctl
 
 go 1.19
 
