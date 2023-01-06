@@ -1,4 +1,4 @@
-module mastodonctl
+module github.com/socraticDevBlog/mastodonctl
 
 go 1.19
 

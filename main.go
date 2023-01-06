@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -12,44 +13,6 @@ import (
 	"github.com/rodaine/table"
 	"gopkg.in/urfave/cli.v1"
 )
-
-type Users struct {
-	Accounts []struct {
-		ID             string        `json:"id"`
-		Username       string        `json:"username"`
-		Acct           string        `json:"acct"`
-		DisplayName    string        `json:"display_name"`
-		Locked         bool          `json:"locked"`
-		Bot            bool          `json:"bot"`
-		Discoverable   bool          `json:"discoverable"`
-		Group          bool          `json:"group"`
-		CreatedAt      time.Time     `json:"created_at"`
-		Note           string        `json:"note"`
-		URL            string        `json:"url"`
-		Avatar         string        `json:"avatar"`
-		AvatarStatic   string        `json:"avatar_static"`
-		Header         string        `json:"header"`
-		HeaderStatic   string        `json:"header_static"`
-		FollowersCount int           `json:"followers_count"`
-		FollowingCount int           `json:"following_count"`
-		StatusesCount  int           `json:"statuses_count"`
-		LastStatusAt   string        `json:"last_status_at"`
-		Noindex        bool          `json:"noindex"`
-		Emojis         []interface{} `json:"emojis"`
-		Fields         []interface{} `json:"fields"`
-	} `json:"accounts"`
-	Statuses []interface{} `json:"statuses"`
-	Hashtags []struct {
-		Name    string `json:"name"`
-		URL     string `json:"url"`
-		History []struct {
-			Day      string `json:"day"`
-			Accounts string `json:"accounts"`
-			Uses     string `json:"uses"`
-		} `json:"history"`
-		Following bool `json:"following"`
-	} `json:"hashtags"`
-}
 
 type Conf struct {
 	ResultsDisplayCount int
@@ -158,7 +121,7 @@ func main() {
 		decoder := json.NewDecoder(configs_file)
 		err := decoder.Decode(&conf)
 		if err != nil {
-			fmt.Println("Error with configurations", err)
+			log.Fatal(err)
 		}
 	}
 
@@ -181,14 +144,6 @@ func main() {
 				},
 			},
 			Action: func(c *cli.Context) error {
-				username := c.String("username")
-
-				// https://discourse.joinmastodon.org/t/how-to-get-mastodons-user-id-from-mastodon-account-acct-username-server/1658/6
-				uri := fmt.Sprintf("%s/api/v2/search?q=%s&resolve=true?limit=%d", conf.ApiUrl, username, conf.ResultsDisplayCount)
-
-				req, _ := http.NewRequest(http.MethodGet, uri, nil)
-				req.Header.Set("Content-Type", "application/json") // => your content-type
-
 				var token_val string
 				if len(conf.AuthToken) > 0 {
 					token_val = fmt.Sprintf("Bearer %s", conf.AuthToken)
@@ -196,19 +151,14 @@ func main() {
 					token_val = fmt.Sprintf("Bearer %s", os.Getenv("BEARER_TOKEN"))
 				}
 
-				req.Header.Add("Authorization", token_val)
-
-				client := http.Client{Timeout: 5 * time.Second}
-				response, err := client.Do(req)
+				accounts, err := GetAccounts(InAccounts{
+					Username:     c.String("username"),
+					AuthToken:    token_val,
+					ApiUrl:       conf.ApiUrl,
+					ResultsCount: conf.ResultsDisplayCount,
+				})
 				if err != nil {
-					panic(err)
-				}
-
-				body, err := ioutil.ReadAll(response.Body) // response body is []byte
-
-				var results Users
-				if err := json.Unmarshal(body, &results); err != nil { // Parse []byte to go struct pointer
-					fmt.Println("Can not unmarshal JSON")
+					log.Fatal(err)
 				}
 
 				headerFmt := color.New(color.FgBlue, color.Underline).SprintfFunc()
@@ -217,12 +167,9 @@ func main() {
 				tbl := table.New("id", "username", "displayname", "URL", "follower count", "following count")
 				tbl.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
-				user := results.Accounts[len(results.Accounts)-1]
-				tbl.AddRow(user.ID, user.Username, user.DisplayName, user.URL, user.FollowersCount, user.FollowingCount)
+				for _, r := range accounts {
 
-				for _, r := range results.Accounts {
-
-					tbl.AddRow(r.ID, r.Username, r.DisplayName, r.URL, r.FollowersCount, r.FollowingCount)
+					tbl.AddRow(r.ID, r.UserName, r.DisplayName, r.URL, r.FollowersCount, r.FollowingCount)
 				}
 
 				tbl.Print()
@@ -252,7 +199,7 @@ func main() {
 
 				resp, err := http.Get(uri)
 				if err != nil {
-					fmt.Println("Error querying Mastodon.social")
+					log.Fatal(err)
 				}
 				defer resp.Body.Close()
 
@@ -260,7 +207,7 @@ func main() {
 
 				var results Response
 				if err := json.Unmarshal(body, &results); err != nil { // Parse []byte to go struct pointer
-					fmt.Println("Can not unmarshal JSON")
+					log.Fatal(err)
 				}
 
 				headerFmt := color.New(color.FgBlue, color.Underline).SprintfFunc()
