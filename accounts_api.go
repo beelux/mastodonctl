@@ -34,7 +34,7 @@ func GetAccounts(in InAccounts) ([]Account, error) {
 
 	var res Users
 	if err := json.Unmarshal(body, &res); err != nil { // Parse []byte to go struct pointer
-		fmt.Println("Can not unmarshal JSON")
+		log.Fatal("Can not unmarshal JSON")
 	}
 
 	var ret []Account
