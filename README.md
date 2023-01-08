@@ -19,7 +19,7 @@ is required. Follow this link: [https://go.dev/dl/](https://go.dev/dl/)
     ```
 2. Build project
     ```bash
-    go build
+    go build .
     ```
 3. Add current project directory to your user PATH
     - [Windows](https://learn.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)) 
