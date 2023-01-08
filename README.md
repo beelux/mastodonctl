@@ -26,7 +26,7 @@ is required. Follow this link: [https://go.dev/dl/](https://go.dev/dl/)
     - [GNU/linux](https://linuxize.com/post/how-to-add-directory-to-path-in-linux/)
 4. (required) in order for the binary to be able to read configuration file
     ```bash
-    export CONFIG_FILEPATH=/absolute/path/to/conf.json
+    export CONFIG_FILEPATH=/absolute/path/to/mastodonctl/conf.json
     ```
 
 `mastodonctl` is now available as CLI tool! 🚀
