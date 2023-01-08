@@ -53,6 +53,15 @@ This is possible by editing [`conf.json`](conf.json) file
 
 Will query Mastadon server's API for user infos based on their `username`
 
+
+### suggested way to store private credentials
+
+populate `AuthToken` field in [conf.json](conf.json) configuration file
+
+⚠️ do not commit this file to `git` version control
+
+### alternate and temporary solution is exporting Mastodon auth token to your environment variable (this option might get removed in the future!)
+###
 ```bash
 export BEARER_TOKEN=<YOUR PERSONAL BEARER TOKEN>
 go run main.go userinfos -username dave
