@@ -24,6 +24,10 @@ is required. Follow this link: [https://go.dev/dl/](https://go.dev/dl/)
 3. Add current project directory to your user PATH
     - [Windows](https://learn.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)) 
     - [GNU/linux](https://linuxize.com/post/how-to-add-directory-to-path-in-linux/)
+4. (required) in order for the binary to be able to read configuration file
+    ```bash
+    export CONFIG_FILEPATH=/absolute/path/to/conf.json
+    ```
 
 `mastodonctl` is now available as CLI tool! 🚀
 

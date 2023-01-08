@@ -19,7 +19,7 @@ type Conf struct {
 
 func (conf *Conf) DefaultConf() {
 	if conf.ResultsDisplayCount == 0 {
-		conf.ResultsDisplayCount = 5
+		conf.ResultsDisplayCount = 10
 	}
 
 	if conf.ApiUrl == "" {
@@ -35,8 +35,21 @@ func PrettyPrint(i interface{}) string {
 
 func main() {
 	conf := Conf{}
-	configs_file, err := os.Open("conf.json")
+
+	var configFilepath string
+	// not ideal but less evil way
+	// (binary executed away from its directory
+	// doesn't know how to locate conf.json file!)
+	if os.Getenv("CONFIG_FILEPATH") != "" {
+		configFilepath = os.Getenv("CONFIG_FILEPATH")
+	} else {
+		// only works when app is executed from within its directory!
+		configFilepath = "conf.json"
+	}
+
+	configs_file, err := os.Open(configFilepath)
 	if os.IsNotExist(err) {
+		fmt.Println("Program is unable to open configuration file: conf.json ...")
 		conf.DefaultConf()
 	} else {
 		defer configs_file.Close()
@@ -91,6 +104,10 @@ func main() {
 
 				for _, r := range accounts {
 					tbl.AddRow(r.ID, r.UserName, r.DisplayName, r.URL, r.FollowersCount, r.FollowingCount)
+				}
+
+				if len(accounts) == 0 {
+					fmt.Println("No results?  Are you sure you have provided a valid APi auth token?")
 				}
 
 				tbl.Print()
