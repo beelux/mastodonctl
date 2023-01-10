@@ -34,6 +34,13 @@ func PrettyPrint(i interface{}) string {
 }
 
 func main() {
+	const (
+		APP_NAME                 string = "mastodonctl"
+		APP_DESCRIPTION          string = "commandline client for a Mastodon social media user"
+		APP_VERSION              string = "0.1.0"
+		MSG_EXPECT_BAD_BEHAVIORS string = "Some Commands might not work properly"
+	)
+
 	conf := Conf{}
 
 	var configFilepath string
@@ -50,6 +57,7 @@ func main() {
 	configs_file, err := os.Open(configFilepath)
 	if os.IsNotExist(err) {
 		fmt.Println("Program is unable to open configuration file: conf.json ...")
+		fmt.Println(MSG_EXPECT_BAD_BEHAVIORS)
 		conf.DefaultConf()
 	} else {
 		defer configs_file.Close()
@@ -61,11 +69,11 @@ func main() {
 	}
 
 	app := cli.NewApp()
-	app.Name = "mastodonctl"
-	app.Usage = "commandline client for a Mastodon social media user"
+	app.Name = APP_NAME
+	app.Usage = APP_DESCRIPTION
 
 	app.Authors = append(app.Authors, cli.Author{Name: "socraticDev", Email: "socraticdev@gmail.com"})
-	app.Version = "0.1.0"
+	app.Version = APP_VERSION
 	app.Commands = []cli.Command{
 		{
 			Name:      "userinfos",
@@ -83,7 +91,7 @@ func main() {
 				if len(conf.AuthToken) > 0 {
 					token_val = fmt.Sprintf("Bearer %s", conf.AuthToken)
 				} else {
-					token_val = fmt.Sprintf("Bearer %s", os.Getenv("BEARER_TOKEN"))
+					fmt.Println(MSG_EXPECT_BAD_BEHAVIORS)
 				}
 
 				accounts, err := GetAccounts(InAccounts{
@@ -107,7 +115,7 @@ func main() {
 				}
 
 				if len(accounts) == 0 {
-					fmt.Println("No results?  Are you sure you have provided a valid APi auth token?")
+					fmt.Println("No results?  Are you sure you have provided a valid APi auth token in conf.json file?")
 				}
 
 				tbl.Print()
@@ -134,6 +142,7 @@ func main() {
 				}
 
 				results, err := GetHashtag(InTopics{Hashtag: hashtag, ApiUrl: conf.ApiUrl, ResultsCount: conf.ResultsDisplayCount})
+
 				if err != nil {
 					log.Fatal(err)
 				}

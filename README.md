@@ -58,12 +58,10 @@ Will query Mastadon server's API for user infos based on their `username`
 
 populate `AuthToken` field in [conf.json](conf.json) configuration file
 
-⚠️ do not commit this file to `git` version control
+⚠️ never commit `conf.json` file to `git` version control
 
-### alternate and temporary solution is exporting Mastodon auth token to your environment variable (this option might get removed in the future!)
-###
 ```bash
-export BEARER_TOKEN=<YOUR PERSONAL BEARER TOKEN>
+export CONFIG_FILEPATH=/absolute/path/to/mastodonctl/conf.json
 go run main.go userinfos -username dave
 ```
 
