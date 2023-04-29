@@ -93,3 +93,16 @@ Expect:
 
 - [mastovue](https://mastovue.glitch.me/#/vis.social/federated/duck)
 - [mastoview](http://www.unmung.com/mastoview)
+
+## my local Golang setup
+
+* my `.profile` file
+```bash
+# golang configs
+export GOPATH=$HOME/go
+export PATH="$GOPATH/bin:$PATH"
+
+# mastodonctl
+# a valid conf.json file located beside mastodonctl binary
+export CONFIG_FILEPATH="$GOPATH/bin/conf.json"
+```
