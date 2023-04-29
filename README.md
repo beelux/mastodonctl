@@ -26,7 +26,8 @@ is required. Follow this link: [https://go.dev/dl/](https://go.dev/dl/)
     - [GNU/linux](https://linuxize.com/post/how-to-add-directory-to-path-in-linux/)
 4. (required) in order for the binary to be able to read configuration file
     ```bash
-    export CONFIG_FILEPATH=/absolute/path/to/mastodonctl/conf.json
+    path=`pwd`
+    export CONFIG_FILEPATH="$path"/conf.json
     ```
 
 `mastodonctl` is now available as CLI tool! 🚀
@@ -60,9 +61,13 @@ populate `AuthToken` field in [conf.json](conf.json) configuration file
 
 ⚠️ never commit `conf.json` file to `git` version control
 
+## start working on local machine
+
+try out a few commands to see if everything is working properly
+
+### list users by username
 ```bash
-export CONFIG_FILEPATH=/absolute/path/to/mastodonctl/conf.json
-go run main.go userinfos -username dave
+go run . userinfos -username dave
 ```
 
 Expect:
@@ -74,7 +79,7 @@ Expect:
 Will query Mastadon server's public API for latest post tagged with a specific hashtag
 
 ```bash
-go run main.go hashtag -name cat
+go run . hashtag -name cat
 ```
 
 Expect:

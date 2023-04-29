@@ -35,7 +35,7 @@ func GetHashtag(in InTopics) ([]OutTopics, error) {
 		n.Hashtag = in.Hashtag
 		n.Username = r.Account.Username
 
-		if len(r.MediaAttachments[len(r.MediaAttachments)-1].URL) > 0 {
+		if len(r.MediaAttachments) > 0 {
 			n.MediaURL = r.MediaAttachments[len(r.MediaAttachments)-1].URL
 		} else {
 			n.MediaURL = "{no media}"
