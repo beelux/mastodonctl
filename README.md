@@ -22,12 +22,15 @@ is required. Follow this link: [https://go.dev/dl/](https://go.dev/dl/)
     go build .
     ```
 3. Add current project directory to your user PATH
-    - [Windows](https://learn.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v=office.14)) 
-    - [GNU/linux](https://linuxize.com/post/how-to-add-directory-to-path-in-linux/)
+  
+    ```bash
+    export PATH="$PATH:${GOPATH}/bin/mastodonctl"
+    ```
+
 4. (required) in order for the binary to be able to read configuration file
     ```bash
-    path=`pwd`
-    export CONFIG_FILEPATH="$path"/conf.json
+    current_directory=`pwd`
+    export CONFIG_FILEPATH=${current_directory}/conf.json
     ```
 
 `mastodonctl` is now available as CLI tool! 🚀
