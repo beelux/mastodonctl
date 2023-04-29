@@ -4,6 +4,7 @@
 # dev personal stuff
 notes.txt
 temp.json
+conf.json
 
 # Binaries for programs and plugins
 *.exe
