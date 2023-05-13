@@ -36,6 +36,7 @@
       runs-on: ubuntu-latest
       needs: create-release
       strategy:
+        max-parallel: 1 # Parallel publishing leads to TCP connections being reset by GitHub
         matrix:
           # build and publish in parallel: linux/amd64, linux/arm64, windows/amd64, darwin/amd64, darwin/arm64
           goos: [linux, windows, darwin]
