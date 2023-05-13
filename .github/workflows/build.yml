@@ -23,13 +23,12 @@
         - uses: actions/checkout@v1
 
         - name: Create a release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          uses: marvinpinto/action-automatic-releases@v1.2.1
           with:
-            tag_name: 'continuous'
-            release_name: "Continuous Build"
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
+            automatic_release_tag: continuous
             prerelease: true
+            title: "Continuous Build"
 
         - name: Build Go binaries
           uses: wangyoucao577/go-release-action@v1.38
