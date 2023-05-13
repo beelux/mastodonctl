@@ -24,6 +24,8 @@
           body: |
             This is a continuous build release.
 
+            It will always contain a build of the latest version of the code in the main branch.
+
     build:
       runs-on: ubuntu-latest
       needs: create-release
