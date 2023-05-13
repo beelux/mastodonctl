@@ -15,12 +15,14 @@
       runs-on: ubuntu-latest
       steps:
       - name: Create a release
-        uses: marvinpinto/action-automatic-releases@v1.2.1
+        uses: softprops/action-gh-release@v0.1.15
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: continuous
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: continuous
           prerelease: true
-          title: "Continuous Build"
+          name: "Continuous Build"
+          body: |
+            This is a continuous build release.
 
     build:
       runs-on: ubuntu-latest
@@ -48,4 +50,5 @@
             goos: ${{ matrix.goos }}
             goarch: ${{ matrix.goarch }}
             compress_assets: 'OFF'
+            md5sum: 'OFF'
   
