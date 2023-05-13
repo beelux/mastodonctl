@@ -14,7 +14,7 @@
     create-release:
       runs-on: ubuntu-latest
       steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - name: Update continuous tag to latest commit
         uses: EndBug/latest-tag@latest
         with:
@@ -45,7 +45,7 @@
               goos: windows
   
       steps:
-        - uses: actions/checkout@v1
+        - uses: actions/checkout@v3
 
         - name: Build Go binaries
           uses: wangyoucao577/go-release-action@v1.38
