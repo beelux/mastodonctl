@@ -1,0 +1,35 @@
+
+  name: Build mastodonctl
+
+  on:
+    push:
+      branches:
+        - master
+
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          # build and publish in parallel: linux/amd64, linux/arm64, windows/amd64, darwin/amd64, darwin/arm64
+          goos: [linux, windows, darwin]
+          goarch: [amd64, arm64]
+          exclude:
+            - goarch: arm64
+              goos: windows
+  
+      steps:
+        - uses: actions/checkout@v1
+
+        - name: Build Go binaries
+          uses: wangyoucao577/go-release-action@v1.38
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            release_tag: "continuous"
+            goversion: "1.19"
+            binary_name: "mastodonctl"
+            ldflags: "-s -w"
+            goos: ${{ matrix.goos }}
+            goarch: ${{ matrix.goarch }}
+            compress_assets: 'OFF'
+  
