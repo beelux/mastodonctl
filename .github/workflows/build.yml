@@ -44,8 +44,9 @@
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
             release_tag: "continuous"
+            binary_name: "mastodonctl" # Binary file
+            asset_name: "mastodonctl-${{ matrix.goos }}-${{ matrix.goarch }}" # File of asset in release
             goversion: "1.19" # Go version being used in go.mod
-            binary_name: "mastodonctl"
             ldflags: "-s -w" # Strip debug symbols etc. (make binaries smaller)
             goos: ${{ matrix.goos }}
             goarch: ${{ matrix.goarch }}
